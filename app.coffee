@@ -4,6 +4,9 @@ msecPerWord = (wpm) ->
     # Convert wpm to miliseocnds between words.
     1 / (wpm / 60 / 1000)
 
+stripHTML = (w) ->
+    w.replace(/<(?:.|\n)*?>/gm, '')
+
 splitWord = (w) ->
     wordLength = w.length
     midpoint = Math.floor(w.length / 2)
@@ -13,11 +16,19 @@ $ ->
     $("#wpm").change () ->
         window.wpm = $($('#wpm').children(':selected')).val()
 
+    $("#texts").change () ->
+        selected = $("#texts").children(":selected")
+        $.ajax selected,
+            async: false
+            success: (resp) =>
+                window.essay = resp
+
     window.essay = "[loading]"
-    $.ajax "essays/tranquil.html",
+    $.ajax "essays/emerson-self-reliance.html",
         async: false
         success: (resp) =>
             window.essay = resp
+
 
     essay = window.essay
     essay_arr = essay.split(' ')
@@ -29,7 +40,7 @@ $ ->
             console.info "Done!"
             clearInterval(interval)
         else
-            setWord(essay_arr[index])
+            setWord(stripHTML(essay_arr[index]))
             index = index + 1
 
     $left = $('#word > #left')
