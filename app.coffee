@@ -1,47 +1,49 @@
-window.wpm = 200
+window.seneca =
+    essay_id: 'essays/tranquil.html'
+    essay: ''
+    essay_arr: []
+    essay_len: 0
+    index: 0
+    wpm: 200
+    interval: null
 
-msecPerWord = (wpm) ->
-    # Convert wpm to miliseocnds between words.
-    1 / (wpm / 60 / 1000)
+    msecPerWord: (wpm) ->
+        # Convert wpm to miliseocnds between words.
+        1 / (wpm / 60 / 1000)
 
-stripHTML = (w) ->
-    w.replace(/<(?:.|\n)*?>/gm, '')
+    stripHTML: (w) ->
+        w.replace(/<(?:.|\n)*?>/gm, '')
 
-splitWord = (w) ->
-    wordLength = w.length
-    midpoint = Math.floor(w.length / 2)
-    return [w.slice(0, midpoint), w[midpoint], w[1+midpoint..]]
+    splitWord: (w) ->
+        wordLength = w.length
+        midpoint = Math.floor(w.length / 2)
+        return [w.slice(0, midpoint), w[midpoint], w[1+midpoint..]]
+
+N = window.seneca
 
 $ ->
     $("#wpm").change () ->
-        window.wpm = $($('#wpm').children(':selected')).val()
+        N.wpm = $($('#wpm').children(':selected')).val()
 
     $("#texts").change () ->
-        selected = $("#texts").children(":selected")
-        $.ajax selected,
+        clearInterval(N.interval)
+        N.index = 0
+        N.essay_id = $("#texts").children(":selected").val()
+        $.ajax N.essay_id,
             async: false
             success: (resp) =>
-                window.essay = resp
+                N.essay_arr = resp.split(' ')
+                N.essay_len = N.essay_arr.length
+                setWord("Have Fun :)", delta=1000)
 
-    window.essay = "[loading]"
-    $.ajax "essays/emerson-self-reliance.html",
-        async: false
-        success: (resp) =>
-            window.essay = resp
-
-
-    essay = window.essay
-    essay_arr = essay.split(' ')
-    essay_len = essay_arr.length
-    index = 0
+    $('#texts').children().first().attr(':selected', 'true')
 
     refreshWord = () ->
-        if index > essay_len
-            console.info "Done!"
-            clearInterval(interval)
+        if N.index > N.essay_len
+            clearInterval(N.interval)
         else
-            setWord(stripHTML(essay_arr[index]))
-            index = index + 1
+            setWord(N.stripHTML(N.essay_arr[N.index]))
+            N.index++
 
     $left = $('#word > #left')
     $mid = $('#word > #mid')
@@ -53,21 +55,19 @@ $ ->
         $('#essay').children().remove()
         return width
 
-    setWord = (word) ->
+    setWord = (word, delta=0) ->
         if /[?,.!;]$/.test word
-            setTimeout(() ->
+            N.interval = setTimeout(() ->
                 refreshWord()
-            , msecPerWord(window.wpm / 4))
+            , N.msecPerWord(N.wpm / 4) + delta)
         else
-            setTimeout(refreshWord, msecPerWord(window.wpm))
+            N.interval = setTimeout(refreshWord, N.msecPerWord(N.wpm) + delta)
 
-        [left, mid, right] = splitWord(word)
+        [left, mid, right] = N.splitWord(word)
 
         $left.css('margin-left', -1 * getWordWidth(left))
-        $left.text(left)
+        $left.html(left)
         $right.css('margin-left', getWordWidth(mid))
-        $mid.text(mid)
-        $right.text(right)
-
-    # Let's try reading at 200wpm.
-    refreshWord()
+        $mid.html(mid)
+        $right.html(right)
+        
