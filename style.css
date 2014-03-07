@@ -1,0 +1,38 @@
+#word {
+	text-align: center;
+	border-top: 3px solid #333;
+	padding-bottom: 10px;
+	border-bottom: 3px solid #333;
+	font: 5.0em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+
+#window {
+	width: 80%;
+	float: center;
+	margin: auto;
+	margin-top: 200px;
+}
+
+#left, #mid, #right {
+	display: inline-block;
+}
+
+
+#left {
+
+}
+#mid {
+	color:  red;
+
+}
+#right {
+
+}
+
+#controls {
+	padding-top: 200px;
+	float: center;
+	margin: auto;
+	width: 400px;
+	text-align:  center;
+}
