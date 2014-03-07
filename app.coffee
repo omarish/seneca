@@ -36,6 +36,11 @@ $ ->
     $mid = $('#word > #mid')
     $right = $('#word > #right')
 
+    getWordWidth = (word) ->
+        w = $("<div class='word' style='display: inline-block'>#{word}</div>").appendTo('#essay')
+        width = w.width()
+        $('#essay').children().remove()
+        return width
 
     setWord = (word) ->
         if /[?,.!;]$/.test word
@@ -46,7 +51,10 @@ $ ->
             setTimeout(refreshWord, msecPerWord(window.wpm))
 
         [left, mid, right] = splitWord(word)
+
+        $left.css('margin-left', -1 * getWordWidth(left))
         $left.text(left)
+        $right.css('margin-left', getWordWidth(mid))
         $mid.text(mid)
         $right.text(right)
 

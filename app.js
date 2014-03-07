@@ -17,7 +17,7 @@
   };
 
   $(function() {
-    var $left, $mid, $right, essay, essay_arr, essay_len, index, refreshWord, setWord,
+    var $left, $mid, $right, essay, essay_arr, essay_len, getWordWidth, index, refreshWord, setWord,
       _this = this;
 
     $("#wpm").change(function() {
@@ -46,6 +46,14 @@
     $left = $('#word > #left');
     $mid = $('#word > #mid');
     $right = $('#word > #right');
+    getWordWidth = function(word) {
+      var w, width;
+
+      w = $("<div class='word' style='display: inline-block'>" + word + "</div>").appendTo('#essay');
+      width = w.width();
+      $('#essay').children().remove();
+      return width;
+    };
     setWord = function(word) {
       var left, mid, right, _ref;
 
@@ -57,7 +65,9 @@
         setTimeout(refreshWord, msecPerWord(window.wpm));
       }
       _ref = splitWord(word), left = _ref[0], mid = _ref[1], right = _ref[2];
+      $left.css('margin-left', -1 * getWordWidth(left));
       $left.text(left);
+      $right.css('margin-left', getWordWidth(mid));
       $mid.text(mid);
       return $right.text(right);
     };

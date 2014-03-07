@@ -8,7 +8,7 @@
 <body>
   <div id='window'>
     <div id='word'>
-      <div id='left'>cons</div><div id='mid'>i</div><div id='right'>stently</div>
+      <div id='left'>cons</div><div id='mid'>i</div><div id='right'>stently</div><div>&nbsp;</div>
     </div>
   </div>
   <div id="essay"></div>
@@ -16,6 +16,7 @@
   <div id="controls">
     WPM: 
     <select id="wpm">
+      <option value='100'>100</option>
       <option value='200'>200</option>
       <option value='400'>400</option>
       <option value='600'>600</option>
@@ -23,7 +24,9 @@
       <option value='1000'>1,000</option>
     </select>
   </div>
+  <div id="invisible" style="display: none">
 
+  </div>
   <script type='text/javascript' src="vendor/jquery-1.10.2.min.js"></script>
   <script type='text/javascript' src="app.js"></script>
 
